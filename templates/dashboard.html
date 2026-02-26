@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Zero Trust | Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            🔐 Zero Trust
+        </div>
+
+        <nav class="sidebar-menu">
+            <a href="{{ url_for('dashboard') }}" class="active">📊 Dashboard</a>
+            <a href="{{ url_for('add_device') }}">➕ Add Device</a>
+            <a href="#live">📡 Live Data</a>
+
+            {% if role == "admin" %}
+                <hr>
+                <span class="sidebar-section">Admin</span>
+                <a href="{{ url_for('admin_users') }}">👥 Manage Users</a>
+                <a href="{{ url_for('admin_logs') }}">🛡 Edge Logs</a>
+            {% endif %}
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="{{ url_for('logout') }}">🚪 Logout</a>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="content">
+
+        <!-- HEADER -->
+        <div class="content-header">
+            <h2>Welcome, {{ user }}</h2>
+            {% if role == "admin" %}
+                <span class="role-badge">ADMIN</span>
+            {% endif %}
+        </div>
+
+        <!-- DEVICES -->
+        <section class="card-section">
+        <h3>📟 Your Devices</h3>
+
+        {% if devices %}
+        <table class="simple-table">
+            <thead>
+                <tr>
+                    <th>Device ID</th>
+                    <th>Status</th>
+                    {% if role == "admin" %}
+                    <th>Action</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in devices %}
+                <tr>
+                    <!-- Show actual device ID -->
+                    <td>{{ d[1] }}</td>
+
+                    <!-- Static status for now -->
+                    <td>
+                        <span class="badge success">ACTIVE</span>
+                    </td>
+
+                    {% if role == "admin" %}
+                    <td>
+                        <a href="{{ url_for('delete_device', device_id=d[0]) }}"
+                        class="delete"
+                        onclick="return confirm('Delete this device?')">
+                            ✖
+                        </a>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <p class="muted">No devices added</p>
+        {% endif %}
+    </section>
+
+        <!-- LIVE DATA -->
+        <section class="card-section" id="live">
+            <h3>📡 Live IoT Data</h3>
+
+            <form method="get" action="{{ url_for('dashboard') }}" class="filter-bar">
+                <label>From</label>
+                <input type="datetime-local" name="from_time">
+
+                <label>To</label>
+                <input type="datetime-local" name="to_time">
+
+                <button class="btn-filter">Filter</button>
+            </form>
+
+            <details open class="collapsible">
+                <summary>View Records</summary>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Device</th>
+                                <th>Data</th>
+                                <th>Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for r in records %}
+                            <tr>
+                                <td>{{ r[0] }}</td>
+                                <td>{{ r[1] }}</td>
+                                <td>{{ r[2] }}</td>
+                                <td>{{ r[3] }}</td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="4" class="center muted">No records</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </details>
+        </section>
+
+    </main>
+</div>
+
+</body>
+</html>

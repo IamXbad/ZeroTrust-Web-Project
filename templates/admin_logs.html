@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edge Security Logs</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+<div class="page-center">
+    <div class="card wide-card">
+
+        <!-- Header -->
+        <div class="header">
+            <h2>🛡 Edge Security Logs</h2>
+            <a href="{{ url_for('dashboard') }}" class="link">← Back to Dashboard</a>
+        </div>
+
+        <hr>
+
+        {% if logs %}
+        <div class="logs-container">
+
+            {% for log in logs %}
+                {% set lower = log.lower() %}
+                {% if "none" in lower or "unauthorized" in lower or "rejected" in lower %}
+                    <div class="log-entry log-danger">
+                        ⚠ {{ log }}
+                        <span class="log-tag danger">SUSPICIOUS</span>
+                    </div>
+                {% else %}
+                    <div class="log-entry log-safe">
+                        ✔ {{ log }}
+                        <span class="log-tag safe">OK</span>
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+        </div>
+        {% else %}
+            <p class="muted center">No security logs available.</p>
+        {% endif %}
+
+    </div>
+</div>
+</body>
+</html>

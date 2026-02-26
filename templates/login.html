@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Zero Trust | Secure Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="auth-body">
+
+    <!-- Background Overlay -->
+    <div class="auth-bg-overlay"></div>
+
+    <!-- Login Card -->
+    <div class="auth-container">
+        <div class="auth-card">
+
+            <!-- Branding -->
+            <div class="auth-header">
+                <h1>🔐 Zero Trust</h1>
+                <p class="subtitle">Secure Edge-IoT Access Platform</p>
+            </div>
+
+            <!-- Error Message -->
+            {% if error %}
+                <div class="alert-error">
+                    {{ error }}
+                </div>
+            {% endif %}
+
+            <!-- Login Form -->
+            <form method="POST" class="auth-form">
+
+                <div class="form-group">
+                    <label>Username</label>
+                    <input
+                        type="text"
+                        name="username"
+                        placeholder="Enter your username"
+                        required
+                        autofocus
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Password</label>
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="Enter your password"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="btn-auth">
+                    Login Securely
+                </button>
+
+            </form>
+
+            <!-- Divider -->
+            <div class="divider">
+                <span>OR</span>
+            </div>
+
+            <!-- Register Link -->
+            <div class="auth-footer">
+                <p>New to Zero Trust?</p>
+                <a href="{{ url_for('register') }}" class="link-auth">
+                    Create an Account
+                </a>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="auth-footer-note">
+            <p>© 2026 Zero Trust Edge Security Platform</p>
+        </div>
+    </div>
+
+</body>
+</html>

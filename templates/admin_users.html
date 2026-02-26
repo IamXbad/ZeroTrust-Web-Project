@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Zero Trust | User Management</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="layout">
+
+    <main class="content full-width">
+
+        <div class="content-header">
+            <h2>👥 User Management</h2>
+        </div>
+
+        <section class="card-section">
+
+            <div class="table-scroll">
+                <table class="simple-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Role</th>
+                            <th>Devices</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for u in users %}
+                        <tr>
+                            <td>{{ u[0] }}</td>
+                            <td>{{ u[1] }}</td>
+                            <td>
+                                {% if u[2] == "admin" %}
+                                    <span class="badge admin-badge">ADMIN</span>
+                                {% else %}
+                                    <span class="badge user-badge">USER</span>
+                                {% endif %}
+                            </td>
+
+                            <!-- Devices Column -->
+                            <td>
+                                {% if user_devices[u[1]] %}
+                                    <div class="device-list">
+                                        {% for d in user_devices[u[1]] %}
+                                            <span class="device-pill">
+                                                {{ d[1] }}
+                                                <a href="{{ url_for('delete_device', device_id=d[0]) }}"
+                                                   class="mini-delete"
+                                                   onclick="return confirm('Delete this device?')">
+                                                    ✖
+                                                </a>
+                                            </span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <span class="muted">No devices</span>
+                                {% endif %}
+                            </td>
+
+                            <!-- User Delete -->
+                            <td>
+                                {% if u[2] != "admin" %}
+                                <a href="{{ url_for('admin_delete_user', user_id=u[0]) }}"
+                                   class="delete-btn"
+                                   onclick="return confirm('Delete this user?')">
+                                    Delete
+                                </a>
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
+
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        </section>
+
+        <div class="back-link">
+            <a href="{{ url_for('dashboard') }}">← Back to Dashboard</a>
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+</html>

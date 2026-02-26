@@ -1,0 +1,19 @@
+[02-Feb-2026 15:44:48] Data accepted from device: device001
+[02-Feb-2026 15:54:01] Data accepted from device: device001
+[02-Feb-2026 15:57:37] Data accepted from device: device001
+[02-Feb-2026 16:59:49] Data accepted from device: device001
+[02-Feb-2026 17:14:01] Data accepted from device: device001
+[02-Feb-2026 17:14:12] Data accepted from device: device001
+[02-Feb-2026 17:14:30] Data accepted from device: device001
+[02-Feb-2026 17:15:32] Data accepted from device: device001
+[02-Feb-2026 17:25:01] Unknown device attempted access
+[02-Feb-2026 17:50:07] Unknown device attempted access
+[02-Feb-2026 17:50:27] Unknown device attempted access
+[02-Feb-2026 17:50:51] Data accepted from device: 200
+[02-Feb-2026 19:38:16] Data accepted from device: 3000
+[03-Feb-2026 16:33:51] Data accepted from device: 4000
+[09-Feb-2026 00:37:27] Unknown device attempted access
+[09-Feb-2026 00:38:11] Data accepted from device: 20034
+[09-Feb-2026 00:59:44] Data accepted from device: 20034
+[09-Feb-2026 01:02:51] Data accepted from device: 2000
+[09-Feb-2026 13:13:39] Data accepted from device: 20034
