@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login Logs</title>
+</head>
+
+<body>
+
+<h2>Login Activity Logs</h2>
+
+<table border="1">
+    <tr>
+        <th>User</th>
+        <th>IP Address</th>
+        <th>Device</th>
+        <th>Time</th>
+    </tr>
+
+    {% for log in logs %}
+    <tr>
+        <td>{{ log[0] }}</td>
+        <td>{{ log[1] }}</td>
+        <td>{{ log[2] }}</td>
+        <td>{{ log[3] }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+</body>
+</html>
