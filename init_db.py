@@ -37,6 +37,16 @@ CREATE TABLE IF NOT EXISTS iot_data (
 )
 """)
 
+c.execute("""
+CREATE TABLE IF NOT EXISTS login_logs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT,
+    ip_address TEXT,
+    user_agent TEXT,
+    login_time TEXT
+)
+""")
+
 # ---------------- CREATE ADMIN ----------------
 c.execute("""
 INSERT OR IGNORE INTO users (username, password, role)
@@ -47,3 +57,4 @@ conn.commit()
 conn.close()
 
 print("✅ Database initialized successfully")
+

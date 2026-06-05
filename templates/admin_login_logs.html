@@ -3,29 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <title>Login Logs</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
 
-<h2>Login Activity Logs</h2>
+<div class="layout">
 
-<table border="1">
-    <tr>
-        <th>User</th>
-        <th>IP Address</th>
-        <th>Device</th>
-        <th>Time</th>
-    </tr>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">🔐 Zero Trust</div>
 
-    {% for log in logs %}
-    <tr>
-        <td>{{ log[0] }}</td>
-        <td>{{ log[1] }}</td>
-        <td>{{ log[2] }}</td>
-        <td>{{ log[3] }}</td>
-    </tr>
-    {% endfor %}
-</table>
+        <nav class="sidebar-menu">
+            <a href="{{ url_for('dashboard') }}">📊 Dashboard</a>
+            <a href="{{ url_for('add_device') }}">➕ Add Device</a>
+            <a href="{{ url_for('dashboard') }}#live">📡 Live Data</a>
+
+            <hr>
+            <span class="sidebar-section">Admin</span>
+            <a href="{{ url_for('admin_users') }}">👥 Manage Users</a>
+            <a href="{{ url_for('admin_logs') }}">🛡 Edge Logs</a>
+            <a href="{{ url_for('admin_login_logs') }}" class="active">📍 Login Logs</a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="{{ url_for('logout') }}">🚪 Logout</a>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="content">
+
+        <div class="card-section">
+            <h2>📍 Login Activity Logs</h2>
+
+            {% if logs %}
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>IP Address</th>
+                            <th>Device</th>
+                            <th>Time</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for log in logs %}
+                        <tr>
+                            <td>
+                                {% if log[0] == "admin" %}
+                                    <span class="badge success">ADMIN</span>
+                                {% else %}
+                                    {{ log[0] }}
+                                {% endif %}
+                            </td>
+                            <td>{{ log[1] }}</td>
+                            <td>{{ log[2][:50] }}...</td>
+                            <td>{{ log[3] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+                <p>No login activity found</p>
+            {% endif %}
+
+        </div>
+
+    </main>
+
+</div>
 
 </body>
 </html>

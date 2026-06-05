@@ -2,46 +2,70 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Edge Security Logs</title>
+    <title>Edge Logs</title>
+
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
-<div class="page-center">
-    <div class="card wide-card">
 
-        <!-- Header -->
-        <div class="header">
-            <h2>🛡 Edge Security Logs</h2>
-            <a href="{{ url_for('dashboard') }}" class="link">← Back to Dashboard</a>
+<div class="layout">
+
+    <!-- ===== SIDEBAR ===== -->
+    <div class="sidebar">
+        <div class="sidebar-brand">🔐 Zero Trust</div>
+
+        <div class="sidebar-menu">
+            <a href="{{ url_for('dashboard') }}">📊 Dashboard</a>
+            <a href="{{ url_for('add_device') }}">➕ Add Device</a>
+            <a href="{{ url_for('dashboard') }}">📡 Live Data</a>
+
+            <div class="sidebar-section">Admin</div>
+
+            <a href="{{ url_for('admin_users') }}">👥 Manage Users</a>
+            <a href="{{ url_for('admin_logs') }}" class="active">🛡 Edge Logs</a>
+            <a href="{{ url_for('admin_login_logs') }}">📍 Login Logs</a>
         </div>
 
-        <hr>
+        <div class="sidebar-footer">
+            <a href="{{ url_for('logout') }}">🚪 Logout</a>
+        </div>
+    </div>
 
-        {% if logs %}
-        <div class="logs-container">
+    <!-- ===== CONTENT ===== -->
+    <div class="content">
 
-            {% for log in logs %}
-                {% set lower = log.lower() %}
-                {% if "none" in lower or "unauthorized" in lower or "rejected" in lower %}
-                    <div class="log-entry log-danger">
-                        ⚠ {{ log }}
-                        <span class="log-tag danger">SUSPICIOUS</span>
-                    </div>
+        <div class="card-section">
+            <h2>🛡 Edge Logs</h2>
+
+            <div class="logs-container">
+
+                {% if logs %}
+                    {% for log in logs %}
+
+                        {% if "Unauthorized" in log %}
+                        <div class="log-entry log-danger">
+                            <span class="log-tag danger">BLOCKED</span>
+                            <span>{{ log }}</span>
+                        </div>
+                        {% else %}
+                        <div class="log-entry log-safe">
+                            <span class="log-tag safe">OK</span>
+                            <span>{{ log }}</span>
+                        </div>
+                        {% endif %}
+
+                    {% endfor %}
                 {% else %}
-                    <div class="log-entry log-safe">
-                        ✔ {{ log }}
-                        <span class="log-tag safe">OK</span>
-                    </div>
+                    <p class="muted">No logs found</p>
                 {% endif %}
-            {% endfor %}
 
+            </div>
         </div>
-        {% else %}
-            <p class="muted center">No security logs available.</p>
-        {% endif %}
 
     </div>
+
 </div>
+
 </body>
 </html>

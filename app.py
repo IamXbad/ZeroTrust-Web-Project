@@ -64,13 +64,29 @@ def login():
         c = conn.cursor()
         c.execute("SELECT password, role FROM users WHERE username=?", (u,))
         row = c.fetchone()
-        conn.close()
 
         if row and check_password_hash(row[0], p):
+
+            # Create session
             session["username"] = u
             session["role"] = row[1]
+
+            # -------- LOGIN LOGGING --------
+            ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            ip = request.remote_addr
+            agent = request.headers.get("User-Agent")
+
+            c.execute("""
+                INSERT INTO login_logs (username, ip_address, user_agent, login_time)
+                VALUES (?, ?, ?, ?)
+            """, (u, ip, agent, ts))
+
+            conn.commit()
+            conn.close()
+
             return redirect(url_for("dashboard"))
 
+        conn.close()
         return render_template("login.html", error="Invalid credentials")
 
     return render_template("login.html")
@@ -215,6 +231,7 @@ def delete_device(device_id):
     return redirect(url_for("admin_users"))
 
 
+
 # -------------------- ADMIN: DELETE USER --------------------
 @app.route("/admin/delete_user/<int:user_id>")
 def admin_delete_user(user_id):
@@ -246,7 +263,7 @@ def admin_delete_user(user_id):
     return redirect(url_for("admin_users"))
 
 
-# -------------------- EDGE LOGS --------------------
+# -------------------- ADMIN: EDGE LOGS --------------------
 @app.route("/admin/logs")
 def admin_logs():
     if session.get("role") != "admin":
@@ -256,9 +273,31 @@ def admin_logs():
         logs = []
     else:
         with open(EDGE_LOG) as f:
-            logs = f.readlines()
+            logs = f.readlines()[::-1]
 
     return render_template("admin_logs.html", logs=logs)
+
+
+
+# -------------------- ADMIN: LOGIN LOGS --------------------
+@app.route("/admin/login_logs")
+def admin_login_logs():
+    if session.get("role") != "admin":
+        return redirect(url_for("dashboard"))
+
+    conn = sqlite3.connect(DB)
+    c = conn.cursor()
+
+    c.execute("""
+        SELECT username, ip_address, user_agent, login_time 
+        FROM login_logs 
+        ORDER BY login_time DESC
+    """)
+    logs = c.fetchall()
+
+    conn.close()
+
+    return render_template("admin_login_logs.html", logs=logs)
 
 # -------------------- HARDWARE API (ESP32) --------------------
 from flask import jsonify
@@ -290,7 +329,14 @@ def edge_data():
 
     # If device exists → accept
     ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    data = f"Temperature = {temperature}C"
+    if temperature > 31:
+       data = f"⚠️ ALERT! High Temperature = {temperature}C"
+
+       # Optional: also log alert
+       with open(EDGE_LOG, "a") as f:
+            f.write(f"[{ts}] ⚠️ High temperature from {device_id}\n")
+    else:
+        data = f"Temperature = {temperature}C"
 
     c.execute(
         "INSERT INTO iot_data (username,device_id,data,timestamp) VALUES (?,?,?,?)",

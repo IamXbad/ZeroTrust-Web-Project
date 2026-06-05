@@ -21,13 +21,14 @@
         <nav class="sidebar-menu">
             <a href="{{ url_for('dashboard') }}" class="active">📊 Dashboard</a>
             <a href="{{ url_for('add_device') }}">➕ Add Device</a>
-            <a href="#live">📡 Live Data</a>
+           
 
             {% if role == "admin" %}
                 <hr>
                 <span class="sidebar-section">Admin</span>
                 <a href="{{ url_for('admin_users') }}">👥 Manage Users</a>
                 <a href="{{ url_for('admin_logs') }}">🛡 Edge Logs</a>
+                <a href="{{ url_for('admin_login_logs') }}">📍 Login Logs</a>
             {% endif %}
         </nav>
 
@@ -122,7 +123,16 @@
                             <tr>
                                 <td>{{ r[0] }}</td>
                                 <td>{{ r[1] }}</td>
-                                <td>{{ r[2] }}</td>
+                                <td>
+                                {% if "ALERT" in r[2] %}
+                                    <span class="badge warning">⚠ ALERT</span>
+                                    <span style="color:red; font-weight:bold;">
+                                        {{ r[2] }}
+                                    </span>
+                                {% else %}
+                                    {{ r[2] }}
+                                {% endif %}
+                                </td>
                                 <td>{{ r[3] }}</td>
                             </tr>
                             {% else %}
@@ -140,4 +150,4 @@
 </div>
 
 </body>
-</html>
+</html> 
